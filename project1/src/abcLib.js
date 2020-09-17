@@ -27,6 +27,31 @@
             }
             ctx.restore();
         }
+        ,dtr(degrees){
+            return degrees * (Math.PI/180);
+        }
+
+        ,drawCircle(ctx,x,y,radius,color){
+            ctx.save();
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x,y,radius,0,Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+        ,getMouseCoordinates(e){
+            let canvasBounds =  e.target.getBoundingClientRect();
+            return {x: e.clientX - canvasBounds.x, y: e.clientY - canvasBounds.y};
+        }
+        ,roundToMultipleOf(number,multipleOf=10){
+            if(number < multipleOf){
+                throw `Number ${number} is smaller than ${multipleOf}.`
+            }
+            //Divides submitted number by the 
+            let divResult = number / multipleOf;
+            return multipleOf * Math.round(divResult);
+        }
     };
 
     if(window){
