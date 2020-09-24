@@ -1,15 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<title>Sine Start</title>
-    <style>canvas{ border: 1px solid black; }</style>
-    <script src="src/abcLib.js"></script>
-	<script src="src/index.js">	</script>
-</head>
-<body>
-<canvas id="canvas"></canvas>
-<button value="0">Split</button>
-<button value="1">Edit</button>
-</body>
+	<head>
+		<meta charset="utf-8" />
+		<title>Wave Editor</title>
+		<link rel="stylesheet" href="styles/default-styles.css">
+		<script src="src/abcLib.js"></script>
+		<script src="src/index.js">	</script>
+	</head>
+
+	<body>
+		<h1>Wave Editor</h1>
+		<canvas id="canvas"></canvas>
+		<div id="controls">
+			<div id="modeButtons">
+				<button value="0" disabled>Split</button>
+				<button value="1">Edit</button>
+			</div>
+			
+	
+			<div id="waveProp" hidden>
+				<label for="width">Width</label>
+				<input type="range" min="1" max="15" value="5" class="slider" id="width" name="width">
+				<label for="height">Height</label>
+				<input type="range" min="1" max="600" value="100" class="slider" id="height" name="height">
+				
+				<label for="counterSlide">Counter</label>
+				<input type="range" min="1" max="100" value="15" class="slider" id="counterSlide" name="counterSlide">
+	
+				
+				<input type="radio" name="waveType" id="sinWave" value="0" checked>
+				<label for="sinWave">Sin</label>
+				<input type="radio" name="waveType" id="cosWave" value="1">
+				<label for="cosWave">Cos</label>
+			</div>
+		</div>
+		
+		
+	</body>
+
+	<footer>
+		<p>In split mode, you can divide the wave into individually editable parts. In edit mode, you can manipulate the waves to using the various controls. The delete key can also be used to remove a split.</p>
+		<p>Andrew Cambridge RIT 2020</p>
+	</footer>
 </html>

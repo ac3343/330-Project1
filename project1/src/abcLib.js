@@ -51,6 +51,20 @@
             //Divides submitted number by the 
             let divResult = number / multipleOf;
             return multipleOf * Math.round(divResult);
+        },
+        drawLine(ctx, x, y, length, color){
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x, y+length);
+            ctx.closePath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = abcLib.getRandomInt(2,5);
+            ctx.stroke();
+            ctx.restore();
+        },
+        getRandomColorWithinRange(hueMin=0, hueMax=360, satMin=50,satMax=100, lumMin=35,lumMax=70){
+            return  `hsl(${abcLib.getRandomInt(hueMin, hueMax)}, ${abcLib.getRandomInt(satMin, satMax)}%, ${abcLib.getRandomInt(lumMin, lumMax)}%)`;
         }
     };
 
