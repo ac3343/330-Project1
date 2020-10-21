@@ -38,10 +38,14 @@ function setupCanvas(canvasElement,analyserNodeRef){
 
 function draw(params={}){
   // 1 - populate the audioData array with the frequency data from the analyserNode
-	// notice these arrays are passed "by reference" 
-	analyserNode.getByteFrequencyData(audioData);
-	// OR
-	//analyserNode.getByteTimeDomainData(audioData); // waveform data
+    // notice these arrays are passed "by reference"
+    if(params.useFreqData){
+        analyserNode.getByteFrequencyData(audioData);
+    }
+    else if(params.useWaveData){
+        // waveform data
+        analyserNode.getByteTimeDomainData(audioData); 
+    }
 	
 	// 2 - draw background
     ctx.save();
@@ -89,20 +93,17 @@ function draw(params={}){
 
         //loop through data and adds new bubbles
         for(let i=0; i<audioData.length; i++){
-            let velocityScaler = 18;
-            let velocity = (audioData[i]) / velocityScaler;
+            let velocityScaler = .5;
+            let velocity = (audioData[i]) * velocityScaler;
             if(bubbles[i] == null){
-                bubbles[i] = new classes.Bubble(margin + i* (barWidth + barSpacing), canvasHeight/2, -velocity);
-                //bubbles.push(new classes.Bubble(margin + i* (barWidth + barSpacing), canvasHeight/2, -velocity));
+                bubbles[i] = new classes.Bubble(margin + i* (barWidth + barSpacing), canvasHeight/2);
+            }
+            else if(bubbles[i].y >= canvasHeight/2 + velocity){
+                bubbles[i].y = canvasHeight/2;
             }
         }
         for(let i=bubbles.length - 1; i >=0; i--){
-            if(!bubbles[i].visible){
-                bubbles[i] = null;
-            }
-            else{
-                bubbles[i].Draw(ctx);
-            }
+            bubbles[i].Draw(ctx);
         }
     }
     //draw aurora
@@ -117,20 +118,24 @@ function draw(params={}){
         //loop through data and draw
         for(let i=0; i<audioData.length; i++){
             ctx.save();
-            let barHeight = audioData[i] / 2;
+            let barHeight = audioData[i] / 1.5;
             let gradient = ctx.createLinearGradient(0, canvasHeight/2 - audioData[i], 0, canvasHeight/2 + audioData[i]);
             let rangeControl = auroraRangeSlider.value;
-            let startColor = `hsl(${(i+auroraColorPos) *rangeControl}, ${(Math.abs(auroraColorSpd) * 25) + 50}%, 50%)`;
-            gradient.addColorStop(0, "rgba(255,255,255, 0)");
-            gradient.addColorStop(0.5, startColor);
-            gradient.addColorStop(1, "rgba(255,255,255, 0)");
+            let startColor = `hsla(${(i+auroraColorPos) *rangeControl}, ${(Math.abs(1) * 25) + 50}%, 50%,`;
+            gradient.addColorStop(0, startColor + "0)");
+            gradient.addColorStop(0.3, startColor + "0)");
+            gradient.addColorStop(0.5, startColor + ".6)");
+            gradient.addColorStop(0.6, startColor + "0)");
+            gradient.addColorStop(1, startColor + "0)");
             ctx.fillStyle = gradient;
             //ctx.strokeStyle = 'rgba(0,0,0,0.50)';
-            //bottom right
-            ctx.fillRect(margin + (i + .5)* (barWidth), canvasHeight/2 ,barWidth, barHeight);
+            //bottom left
+            ctx.fillRect(margin + (i + .5)* (barWidth), canvasHeight/2 ,barWidth, barHeight/3);
             //top left
-            ctx.fillRect(margin + (i + .5)* (barWidth), canvasHeight/2 ,barWidth, -barHeight);
-            ctx.fillRect(margin - (i + .5)* (barWidth), canvasHeight/2 ,barWidth, barHeight);
+            ctx.fillRect(margin + (i + .5)* (barWidth), canvasHeight/2,barWidth, -barHeight);
+            //bottom right
+            ctx.fillRect(margin - (i + .5)* (barWidth), canvasHeight/2 ,barWidth, barHeight/3);
+            //top right
             ctx.fillRect(margin - (i + .5)* (barWidth), canvasHeight/2 ,barWidth, -barHeight);
             //ctx.strokeRect(margin + i* (barWidth + barSpacing), canvasHeight/2,barWidth,barHeight);
             ctx.restore();

@@ -1,10 +1,10 @@
 import * as utils from './utils.js';
 
 class Bubble{
-    constructor(_x, _y,_velocity){
+    constructor(_x, _y){
         this.x = _x;
         this.y = _y;
-        this.velocity = _velocity;
+        this.velocity = 8;
         this.alpha = 100;
         this.fillColor = [100, 0, 0];
         this.radius = 2;

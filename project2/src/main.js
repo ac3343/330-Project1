@@ -18,8 +18,10 @@ const drawParams = {
     showNoise       :false,
     showInvert      :false,
     showEmboss      :false,
-    showBubbles     :false,
-    showAurora      :true
+    showBubbles     :true,
+    showAurora      :false,
+    useFreqData     :true,
+    useWaveData     :false
 }
 
 // 1 - here we are faking an enumeration
@@ -122,6 +124,17 @@ function setupUI(canvasElement){
     document.querySelector('#embossCB').checked = drawParams.showInvert;
     document.querySelector('#embossCB').onchange = e => {
         drawParams.showEmboss = e.target.checked;
+    };
+
+    document.querySelector('#freqData').checked = drawParams.useFreqData;
+    document.querySelector('#freqData').onchange = e => {
+        drawParams.useFreqData = e.target.checked;
+        drawParams.useWaveData = false;
+    };
+    document.querySelector('#waveData').checked = drawParams.useWaveData;
+    document.querySelector('#waveData').onchange = e => {
+        drawParams.useWaveData = e.target.checked;
+        drawParams.useFreqData = false;
     };
 	
 } // end setupUI
