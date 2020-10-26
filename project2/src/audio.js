@@ -54,7 +54,6 @@ function setupWebaudio(filePath){
     sourceNode.connect(analyserNode);
     analyserNode.connect(gainNode);
     gainNode.connect(audioCtx.destination);
-
     
 }
 
@@ -76,4 +75,28 @@ function setVolume(value){
     gainNode.gain.value = value;
 }
 
-export {audioCtx, setupWebaudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, analyserNode};
+function setTime(value){
+    value = Number(value);
+    element.currentTime= value;
+}
+
+function getDuration(){
+    return element.duration;
+}
+
+function getTime(){
+    return element.currentTime;
+}
+
+function getTimeAsString(timeInSecs){
+    let seconds = Math.floor(timeInSecs) % 60;
+    if(seconds < 10){
+        seconds = "0" + seconds;
+    }
+
+    let minutes = Math.floor(timeInSecs / 60);
+    return `${minutes}:${seconds}`;
+
+}
+
+export {audioCtx, setupWebaudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, analyserNode,getDuration,setTime,getTime,getTimeAsString};

@@ -9,41 +9,28 @@
     
     <body>
         <main>
-            <canvas width="800" height="400"></canvas>
+            <h1 id="programTitle">Audio Visualizer</h1>
+            <canvas width="1000" height="500"></canvas>
             <div id="controls">
-                <section>
+                <section id="progress">
+                    <span id="progressLabel">0:00</span>
+                    <input type="range" id="progressBar" min="0" max="1" value="0">
+                    <span id="durationLabel">0:00</span>
+                </section>
+                <section id="controlButtons">
                     <button id="playButton" data-playing="no"></button>
                     <button id="fsButton">Full Screen</button>
-                
-                    <label>Track: 
-                        <select id="trackSelect">
-                            <option value="media/New Adventure Theme.mp3" selected>New Adventure Theme</option>
-                            <option value="media/Peanuts Theme.mp3">Peanuts Theme</option>
-                            <option value="media/The Picard Song.mp3">The Picard Song</option>
-                        </select>
-                    </label>
                 </section>
+                
                 
                 <section>
                     Volume: <input type="range" id="volumeSlider" min="0" max="2" value="1" step="0.01">
                     <span id="volumeLabel">???</span>
                 </section>
                 <section>
-                    Aurora Color Range: <input type="range" id="auroraSlider" min="0" max="4" value="1" step="0.01">
-                    <span id="auroraLabel">???</span>
-                </section>
-                <section>
-                    Aurora Speed: <span id="auroraSpeedLabel">???</span>
-                </section>
-                <section>
                     <span><input type="checkbox" id="gradientCB"><label for="gradientCB">Show Gradient</label></span>
-                    <span><input type="checkbox" id="barsCB"><label for="barsCB">Show Bars</label></span>
-                    <span><input type="checkbox" id="auroraCB"><label for="auroraCB">Show Aurora Borealis</label></span>
                     <span><input type="checkbox" id="bubblesCB"><label for="bubblesCB">Show Bubbles</label></span>
-                    <span><input type="checkbox" id="circlesCB"><label for="circlesCB">Show Circles</label></span>
-                    <span><input type="checkbox" id="noiseCB"><label for="noiseCB">Show Noise</label></span>
                     <span><input type="checkbox" id="invertCB"><label for="invertCB">Show Invert</label></span>
-                    <span><input type="checkbox" id="embossCB"><label for="embossCB">Show Emboss</label></span>
                   </section>
                 <section>
                     <input type="radio" name="dataForm" id="freqData">

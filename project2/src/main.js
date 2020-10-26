@@ -10,29 +10,38 @@
 import * as utils from './utils.js';
 import * as audio from './audio.js';
 import * as canvas from './canvas.js';
+import * as dat from './dat.gui.module.js';
 
 const drawParams = {
     showGradient    :true,
-    showBars        :false,
-    showCircles     :false,
-    showNoise       :false,
     showInvert      :false,
-    showEmboss      :false,
-    showBubbles     :true,
-    showAurora      :false,
+    showBubbles     :false,
+    showAurora      :true,
     useFreqData     :true,
-    useWaveData     :false
+    useWaveData     :false,
+    auroraSpeed     :2,
+    auroraRange     :1
+}
+
+const SOUNDS = {
+    newAdventureTheme   :   "media/New Adventure Theme.mp3", 
+    thePicardSong       :   "media/The Picard Song.mp3",
+    peanutsTheme        :   "media/Peanuts Theme.mp3"
 }
 
 // 1 - here we are faking an enumeration
 const DEFAULTS = Object.freeze({
-	sound1  :  "media/New Adventure Theme.mp3"
+    sound1      :  "media/New Adventure Theme.mp3",
+    sound1Name  : "newAdventureTheme"
 });
+
+let progressBar,progressLabel;
 
 function init(){
     audio.setupWebaudio(DEFAULTS.sound1);
 	console.log("init called");
-	console.log(`Testing utils.getRandomColor() import: ${utils.getRandomColor()}`);
+    console.log(`Testing utils.getRandomColor() import: ${utils.getRandomColor()}`);
+    
 	let canvasElement = document.querySelector("canvas"); // hookup <canvas> element
     setupUI(canvasElement);
     canvas.setupCanvas(canvasElement,audio.analyserNode);
@@ -40,6 +49,9 @@ function init(){
 }
 
 function setupUI(canvasElement){
+    
+
+
     // A - hookup fullscreen button
     const fsButton = document.querySelector("#fsButton");
         
@@ -48,7 +60,50 @@ function setupUI(canvasElement){
         console.log("init called");
         utils.goFullscreen(canvasElement);
     };
+    let volumeSlider = document.querySelector("#volumeSlider");
+    let volumeLabel = document.querySelector("#volumeLabel");
 
+    let durationLabel = document.querySelector("#durationLabel");
+
+    //Creates DAT GUI
+    let gui = new dat.GUI();
+
+    //Adds folder for audio controls
+    let audioFolder = gui.addFolder("Audio");
+    let tracks = {song:DEFAULTS.sound1}
+    let trackSelect = audioFolder.add(tracks, "song", SOUNDS);
+
+    trackSelect.onChange((function(e){
+        audio.loadSoundFile(e);
+
+        if(playButton.dataset.playing = "yes"){
+            playButton.dispatchEvent(new MouseEvent("click"));
+        }
+        durationLabel.innerHTML = "0:00";
+
+    }));
+
+    let auroraFolder = gui.addFolder("Aurora");
+    let auroraToggle = auroraFolder.add({shown: drawParams.showAurora}, "shown");
+    auroraToggle.onChange((e)=>{
+        drawParams.showAurora = e;
+    });
+    let colorChangeSlider = auroraFolder.add({colorChangeSpeed: drawParams.auroraSpeed},"colorChangeSpeed", -10, 10);
+    colorChangeSlider.onChange((e)=>{
+        drawParams.auroraSpeed = e;
+    });
+    let colorRangeSlider = auroraFolder.add({colorRange: drawParams.auroraRange},"colorRange", .1, 5);
+    colorRangeSlider.onChange((e)=>{
+        drawParams.auroraRange = e;
+    });
+
+    gui.addFolder("Bubbles");
+
+    let visualsFolder = gui.addFolder("Visuals");
+
+    let gradientColorSelect = visualsFolder.addColor({gradientColor: 'rgb(9,9,121)'},"gradientColor");
+
+    
     playButton.onclick = e => {
         console.log(`audioCtx.state before = ${audio.audioCtx.state}`);
 
@@ -63,67 +118,37 @@ function setupUI(canvasElement){
             audio.pauseCurrentSound();
             e.target.dataset.playing = "no";
         }
+        
+        progressBar.max = audio.getDuration();
+        durationLabel.innerHTML = audio.getTimeAsString(audio.getDuration());
     };
 
-    let volumeSlider = document.querySelector("#volumeSlider");
-    let volumeLabel = document.querySelector("#volumeLabel");
+    
 
     volumeSlider.oninput = e =>{
         audio.setVolume(e.target.value);
         volumeLabel.innerHTML = Math.round((e.target.value/ 2 * 100));
     };
 
-    let auroraSlider = document.querySelector("#auroraSlider");
-    let auroraLabel = document.querySelector("#auroraLabel");
-    auroraLabel.innerHTML = Math.round((auroraSlider.value/ 2 * 100));
-
-    auroraSlider.oninput = e =>{
-        auroraLabel.innerHTML = Math.round((e.target.value/ 2 * 100));
-    };
-
     volumeSlider.dispatchEvent(new Event("input"));
 
-    let trackSelect = document.querySelector("#trackSelect");
-
-    trackSelect.onchange = e =>{
-        audio.loadSoundFile(e.target.value);
-
-        if(playButton.dataset.playing = "yes"){
-            playButton.dispatchEvent(new MouseEvent("click"));
-        }
+    progressBar = document.querySelector("#progressBar");
+    progressBar.oninput = e =>{
+        audio.setTime(e.target.value);
     };
+    progressLabel = document.querySelector("#progressLabel");
 
     document.querySelector('#gradientCB').checked = drawParams.showGradient;
     document.querySelector('#gradientCB').onchange = e => {
         drawParams.showGradient = e.target.checked;
     };
-    document.querySelector('#barsCB').checked = drawParams.showBars;
-    document.querySelector('#barsCB').onchange = e => {
-        drawParams.showBars = e.target.checked;
-    };
     document.querySelector('#bubblesCB').checked = drawParams.showBubbles;
     document.querySelector('#bubblesCB').onchange = e => {
         drawParams.showBubbles = e.target.checked;
     };
-    document.querySelector('#auroraCB').checked = drawParams.showAurora;
-    document.querySelector('#auroraCB').onchange = e => {
-        drawParams.showAurora = e.target.checked;
-    };
-    document.querySelector('#circlesCB').checked = drawParams.showCircles;
-    document.querySelector('#circlesCB').onchange = e => {
-        drawParams.showCircles = e.target.checked;
-    };
-    document.querySelector('#noiseCB').checked = drawParams.showNoise;
-    document.querySelector('#noiseCB').onchange = e => {
-        drawParams.showNoise = e.target.checked;
-    };
     document.querySelector('#invertCB').checked = drawParams.showInvert;
     document.querySelector('#invertCB').onchange = e => {
         drawParams.showInvert = e.target.checked;
-    };
-    document.querySelector('#embossCB').checked = drawParams.showInvert;
-    document.querySelector('#embossCB').onchange = e => {
-        drawParams.showEmboss = e.target.checked;
     };
 
     document.querySelector('#freqData').checked = drawParams.useFreqData;
@@ -144,6 +169,9 @@ function loop(){
     requestAnimationFrame(loop);
 
     canvas.draw(drawParams);
+
+    progressBar.value  = audio.getTime();
+    progressLabel.innerHTML = audio.getTimeAsString(progressBar.value);
 
     // 1) create a byte array (values of 0-255) to hold the audio data
     // normally, we do this once when the program starts up, NOT every frame
