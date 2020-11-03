@@ -14,9 +14,12 @@ import * as dat from './dat.gui.module.js';
 
 const drawParams = {
     showGradient    :true,
+    gradientColor   :"rgb(0,0,139)",
     showInvert      :false,
+    showMono        :false,
     showBubbles     :false,
     showAurora      :true,
+    showQuad        :true,
     useFreqData     :true,
     useWaveData     :false,
     auroraSpeed     :2,
@@ -83,10 +86,25 @@ function setupUI(canvasElement){
 
     }));
 
+    let biquadToggle = audioFolder.add({filter: false}, "filter");
+    biquadToggle.onChange((e)=>{
+        if(e){
+            audio.setBiquad(800, "lowpass");
+        }
+        else{
+            audio.setBiquad(0);
+        }
+    });
+
+    //Folder for aurora controls
     let auroraFolder = gui.addFolder("Aurora");
-    let auroraToggle = auroraFolder.add({shown: drawParams.showAurora}, "shown");
+    let auroraToggle = auroraFolder.add({showAurora: drawParams.showAurora}, "showAurora");
     auroraToggle.onChange((e)=>{
         drawParams.showAurora = e;
+    });
+    let quadToggle = auroraFolder.add({showWave: drawParams.showQuad}, "showWave");
+    quadToggle.onChange((e)=>{
+        drawParams.showQuad = e;
     });
     let colorChangeSlider = auroraFolder.add({colorChangeSpeed: drawParams.auroraSpeed},"colorChangeSpeed", -10, 10);
     colorChangeSlider.onChange((e)=>{
@@ -97,13 +115,38 @@ function setupUI(canvasElement){
         drawParams.auroraRange = e;
     });
 
-    gui.addFolder("Bubbles");
 
+    //Folder for bubble controls
+    let bubblesFolder = gui.addFolder("Bubbles");
+    let showBubblesSelect = bubblesFolder.add({showBubbles: drawParams.showBubbles}, "showBubbles");
+    showBubblesSelect.onChange((e)=>{
+        drawParams.showBubbles = e;
+    });
+
+    //Folder for visual options
     let visualsFolder = gui.addFolder("Visuals");
 
-    let gradientColorSelect = visualsFolder.addColor({gradientColor: 'rgb(9,9,121)'},"gradientColor");
+    let showInvertSelect = visualsFolder.add({showInvert: drawParams.showInvert}, "showInvert");
+    showInvertSelect.onChange((e)=>{
+        drawParams.showInvert = e;
+    });
+
+    let showMonoSelect = visualsFolder.add({showMono: drawParams.showMono}, "showMono");
+    showMonoSelect.onChange((e)=>{
+        drawParams.showMono = e;
+    });
+
+    let showGradientSelect = visualsFolder.add({showGradient: drawParams.showGradient}, "showGradient");
+    showGradientSelect.onChange((e)=>{
+        drawParams.showGradient = e;
+    });
+    let gradientColorSelect = visualsFolder.addColor({gradientColor: drawParams.gradientColor},"gradientColor");
+    gradientColorSelect.onChange((e)=>{
+        drawParams.gradientColor = e;
+    });
 
     
+    //Playback elements
     playButton.onclick = e => {
         console.log(`audioCtx.state before = ${audio.audioCtx.state}`);
 
@@ -121,9 +164,7 @@ function setupUI(canvasElement){
         
         progressBar.max = audio.getDuration();
         durationLabel.innerHTML = audio.getTimeAsString(audio.getDuration());
-    };
-
-    
+    };    
 
     volumeSlider.oninput = e =>{
         audio.setVolume(e.target.value);
@@ -137,19 +178,6 @@ function setupUI(canvasElement){
         audio.setTime(e.target.value);
     };
     progressLabel = document.querySelector("#progressLabel");
-
-    document.querySelector('#gradientCB').checked = drawParams.showGradient;
-    document.querySelector('#gradientCB').onchange = e => {
-        drawParams.showGradient = e.target.checked;
-    };
-    document.querySelector('#bubblesCB').checked = drawParams.showBubbles;
-    document.querySelector('#bubblesCB').onchange = e => {
-        drawParams.showBubbles = e.target.checked;
-    };
-    document.querySelector('#invertCB').checked = drawParams.showInvert;
-    document.querySelector('#invertCB').onchange = e => {
-        drawParams.showInvert = e.target.checked;
-    };
 
     document.querySelector('#freqData').checked = drawParams.useFreqData;
     document.querySelector('#freqData').onchange = e => {

@@ -3,13 +3,16 @@
     <head>
         <meta charset="utf-8" />
         <title>Audio Visualizer</title>
+        <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Asul&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="styles/default-styles.css">
         <script src="src/loader.js" type="module"></script>
     </head>
     
     <body>
-        <main>
+        <header>
             <h1 id="programTitle">Audio Visualizer</h1>
+        </header>
+        <main>            
             <canvas width="1000" height="500"></canvas>
             <div id="controls">
                 <section id="progress">
@@ -28,11 +31,6 @@
                     <span id="volumeLabel">???</span>
                 </section>
                 <section>
-                    <span><input type="checkbox" id="gradientCB"><label for="gradientCB">Show Gradient</label></span>
-                    <span><input type="checkbox" id="bubblesCB"><label for="bubblesCB">Show Bubbles</label></span>
-                    <span><input type="checkbox" id="invertCB"><label for="invertCB">Show Invert</label></span>
-                  </section>
-                <section>
                     <input type="radio" name="dataForm" id="freqData">
                     <label for="freqData">Frequency Data</label>
                     <input type="radio" name="dataForm" id="waveData">
@@ -40,9 +38,9 @@
                 </section>
             </div>
         </main>
+        
+        <footer><p>Andrew Cambridge</p></footer>
+
     </body>
     
-    <footer>
-        
-    </footer>
 </html>

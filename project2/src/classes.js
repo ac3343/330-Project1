@@ -5,13 +5,13 @@ class Bubble{
         this.x = _x;
         this.y = _y;
         this.velocity = 9;
-        this.fillColor = [100, 0, 0];
         this.radius = 2.5;
     }
 
-    Draw(ctx){
-        let color = `rgba(${this.fillColor[0]}, ${this.fillColor[1]}, ${this.fillColor[2]}, 100)`;
-        utils.drawCircle(ctx, this.x, this.y, this.radius, color)
+    Draw(ctx,fillColor){
+        //let color = `rgba(${fillColor[0]}, ${fillColor[1]}, ${fillColor[2]}, 100)`;
+        let color = fillColor;
+        utils.drawCircle(ctx, this.x, this.y, this.radius, color);
         this.y -= this.velocity;
         this.alpha -= this.transparencyRate;
     }
