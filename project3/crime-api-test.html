@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime API Test</title>
+
+    <!-- Add this to <head> -->
+
+    <!-- Load required Bootstrap and BootstrapVue CSS -->
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+
+    <!-- Load polyfills to support older browsers -->
+    <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"
+        crossorigin="anonymous"></script>
+
+    <!-- Load Vue followed by BootstrapVue -->
+    <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+    <!-- Load the following for BootstrapVueIcons support -->
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/vue-range-component@1.0.3/dist/vue-range-slider.min.css">
+    <script src="https://unpkg.com/vue-range-component@1.0.3/dist/vue-range-slider.min.js"></script>
+</head>
+
+<body>
+    <div id="root">
+        <vue-range-slider v-model="progress" min="0" id="progBar"></vue-range-slider>
+        <vue-range-slider v-model="year" min="1991" max="2014" tooltip-dir="botton">
+        </vue-range-slider>
+        <button @click="checkYear">Test</button>
+
+        <ul>
+            <li v-for="c in cases" v-text="c.fields.bias_motivation"></li>
+        </ul>
+    </div>
+
+    <script type="module">
+        import * as ajax from "./src/ajax.js";
+        let testUrl = "https://public.opendatasoft.com/api/records/1.0/search/?dataset=hate-crime-per-state&q=&facet=basename&facet=year&facet=bias_motivation";
+        const defaultCases = [{}];
+        let app = new Vue({
+            el: '#root',
+            data: {
+                year: [2002, 2005],
+                cases: [],
+                progress:100
+            },
+            methods: {
+                updateYear() {
+                    if (this.year) {
+                        this.year = grave.value;
+                    }
+                },
+                checkYear() {
+                    this.cases = [];
+                    progBar.max = this.year[1] - this.year[0];
+                    this.progress = 0;
+                    for (let i = this.year[0]; i <= this.year[1]; i++) {
+                        let url = testUrl;
+                        url += "&refine.year=";
+                        url += i;
+                        console.log(url);
+                        ajax.downloadFile(url, (json) => {
+                            let object = JSON.parse(json);
+                            this.cases = this.cases.concat(object.records);
+                            console.log(this.cases);
+                            this.progress += (this.year[0] / this.year[1]) * 100;
+                        })
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
