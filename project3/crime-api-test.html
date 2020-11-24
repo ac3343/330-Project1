@@ -34,21 +34,25 @@
         </vue-range-slider>
         <button @click="checkYear">Test</button>
 
+
+
         <ul>
-            <li v-for="c in cases" v-text="c.fields.bias_motivation"></li>
+            <li v-for="c in cases" v-text="c.fields.year"></li>
         </ul>
     </div>
 
     <script type="module">
         import * as ajax from "./src/ajax.js";
-        let testUrl = "https://public.opendatasoft.com/api/records/1.0/search/?dataset=hate-crime-per-state&q=&facet=basename&facet=year&facet=bias_motivation";
+        const ROWS = 20;
+        const API_URL = `https://public.opendatasoft.com/api/records/1.0/search/?dataset=hate-crime-per-state&q=&rows=${ROWS}&facet=basename&facet=year&facet=bias_motivation`;
         const defaultCases = [{}];
+        
         let app = new Vue({
             el: '#root',
             data: {
                 year: [2002, 2005],
                 cases: [],
-                progress:100
+                progress: 100
             },
             methods: {
                 updateYear() {
@@ -60,18 +64,19 @@
                     this.cases = [];
                     progBar.max = this.year[1] - this.year[0];
                     this.progress = 0;
-                    for (let i = this.year[0]; i <= this.year[1]; i++) {
-                        let url = testUrl;
-                        url += "&refine.year=";
-                        url += i;
-                        console.log(url);
-                        ajax.downloadFile(url, (json) => {
-                            let object = JSON.parse(json);
-                            this.cases = this.cases.concat(object.records);
-                            console.log(this.cases);
-                            this.progress += (this.year[0] / this.year[1]) * 100;
-                        })
+                    let url = API_URL;
+                    for (let i = 1991; i <= 2014; i++) {
+                        if (i < this.year[0] || i > this.year[1]) {
+                            url += "&exclude.year=";
+                            url += i;
+                        }
                     }
+                    ajax.downloadFile(url, (json) => {
+                        let object = JSON.parse(json);
+                        this.cases = this.cases.concat(object.records);
+                        console.log(this.cases);
+                        this.progress += (this.year[0] / this.year[1]) * 100;
+                    });
                 }
             }
         });

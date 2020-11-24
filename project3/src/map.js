@@ -10,8 +10,8 @@ function initMap() {
     map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v10',
-        center: [-77.67454147338866, 43.08484339838443],
-        zoom: 15.5
+        center: [-95.712891,37.090240,],
+        zoom: 3
     });
 
     // The 'building' layer in the mapbox-streets vector source contains building-height

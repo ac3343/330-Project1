@@ -8,6 +8,19 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+    <!-- Load required Bootstrap and BootstrapVue CSS -->
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+    <!-- Load polyfills to support older browsers -->
+    <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"
+        crossorigin="anonymous"></script>
+    <!-- Load Vue followed by BootstrapVue -->
+    <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+    <!-- Load the following for BootstrapVueIcons support -->
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/vue-range-component@1.0.3/dist/vue-range-slider.min.css">
+    <script src="https://unpkg.com/vue-range-component@1.0.3/dist/vue-range-slider.min.js"></script>
     <link rel="stylesheet" href="styles/default-styles.css">
     <script src="src/loader.js" type="module"></script>
 </head>
@@ -16,11 +29,10 @@
 
     <div id='map'></div>
     <div id="controls">
-        <button id="btn1">RIT @ Zoom 15.5</button>
-        <button id="btn2">RIT @ Isometric View</button>
-        <button id="btn3">World @ Zoom 0</button>
-        <button id="btn4">IGM @ Zoom 18</button>
-        <button id="btn5">Load some markers</button>
+        <button id="btn4" @click="changeView(3, lnglatUSA)" >USA</button>
+        <vue-range-slider v-model="year" min="1991" max="2014" tooltip-dir="botton">
+        </vue-range-slider>
+        <button @click="checkYear">Load Markers</button>
     </div>
 
 </body>
