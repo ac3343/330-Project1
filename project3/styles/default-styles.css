@@ -19,7 +19,7 @@ body {
     cursor: pointer;
 }
 
-.poi{
+.poi {
     background-image: url('../images/mapbox-icon.png');
 }
 
@@ -32,27 +32,36 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
-#controls{
-    position :
-    absolute;
+#controls {
+    position: absolute;
     z-index: 1;
     top: 20px;
     left: 20px;
-    width : 130px;
-    height : 120px;
+    width: 130px;
+    height: 120px;
     background-color: lightgray;
-    border:lpx solid
-    black;
-    height : auto;
+    border: lpx solid black;
+    height: auto;
 }
-    #controls button{
+
+#controls button {
     font-size: .9em;
-    width : 100%;
-    
-    background-color :hsl(
-    195.100%,50%);
+    width: 100%;
+    background-color: hsl( 195.100%, 50%);
 }
-    #controls button:hover{
+
+#controls button:hover {
     color: #777;
-    background-color :    hsl(195,100%,60%)
+    background-color: hsl(195, 100%, 60%)
+}
+
+#biasButtons {
+    width: auto;
+    background-color: lightgray;
+    height: 400px;
+    overflow: scroll;
+}
+#biasButtons::-webkit-scrollbar{
+    width: 2px;
+    
 }

@@ -29,10 +29,21 @@
 
     <div id='map'></div>
     <div id="controls">
-        <button id="btn4" @click="changeView(3, lnglatUSA)" >USA</button>
+        <button id="btn4" @click="changeView(3, lnglatUSA)">USA</button>
         <vue-range-slider v-model="year" min="1991" max="2014" tooltip-dir="botton">
         </vue-range-slider>
         <button @click="checkYear">Load Markers</button>
+        <button @click="toggleMotivations">Motivations</button>
+        <div id="biasButtons" hidden>
+            <template v-for="b in allBias">
+                <div>
+
+                    <label v-bind:for="b"> <input type="checkbox" v-bind:id="b" v-bind:value="b" v-model="bias"
+                            class="biasButton"> {{b}}</label>
+                </div>
+
+            </template>
+        </div>
     </div>
 
 </body>

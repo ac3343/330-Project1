@@ -191,7 +191,7 @@ function addMarker(coordinates, title, description, className){
      el.className = className;
 
      // make a marker for each feature and add to the map
-     new mapboxgl.Marker(el)
+     return new mapboxgl.Marker(el)
          .setLngLat(coordinates)
          .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
              .setHTML('<h3>' + title + '</h3><p>' + description + '</p>'))

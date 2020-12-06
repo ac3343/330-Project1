@@ -1,6 +1,6 @@
 import * as map from "./map.js"
 import * as ajax from "./ajax.js";
-
+import * as resources from "./resources.js";
 let poi;
 
 function init() {
@@ -13,9 +13,10 @@ function init() {
 
 function setupUI() {
     // it's easy to get [longitude,latitude] coordinates with this tool: http://geojson.io/
-    const ROWS = 20;
-    const API_URL = `https://public.opendatasoft.com/api/records/1.0/search/?dataset=hate-crime-per-state&q=&rows=${ROWS}&facet=basename&facet=year&facet=bias_motivation`;
+    const ROWS_PER_STATE = 100;
+    const API_URL = `https://public.opendatasoft.com/api/records/1.0/search/?dataset=hate-crime-per-state&q=&rows=${ROWS_PER_STATE}&facet=basename&facet=year&facet=bias_motivation`;
     const defaultCases = [{}];
+    let markers = [];
 
     let app = new Vue({
         el: '#controls',
@@ -24,7 +25,9 @@ function setupUI() {
             cases: [],
             lnglatIGM: [-77.67990589141846, 43.08447511795301],
             lnglatRIT: [-77.67454147338866, 43.08484339838443],
-            lnglatUSA: [-95.712891,37.090240,]
+            lnglatUSA: [-95.712891,37.090240,],
+            bias: [],
+            allBias: resources.getBias()
         },
         methods: {
             updateYear() {
@@ -33,6 +36,9 @@ function setupUI() {
                 }
             },
             checkYear() {
+                for(let i = markers.length - 1; i >= 0; i--){
+                    markers.pop().remove();
+                }
                 this.cases = [];
                 let url = API_URL;
                 for (let i = 1991; i <= 2014; i++) {
@@ -41,14 +47,29 @@ function setupUI() {
                         url += i;
                     }
                 }
-                ajax.downloadFile(url, (json) => {
-                    let object = JSON.parse(json);
-                    this.cases = this.cases.concat(object.records);
-                    for (const c of this.cases) {
-                        map.addMarker(c.geometry.coordinates,c.fields.year, c.fields.bias_motivation, "marker poi");
-                    }
-                    console.log(this.cases);
-                });
+
+                for (const b of this.allBias) {
+                    if(!this.bias.includes(b)){
+                        url += "&exclude.bias_motivation=";
+                        url += b;
+                    }                    
+                }
+
+                //Loop through states
+                for (const s of resources.getStates()) {
+                    let currentStateCount = 0;
+                    let stateUrl = url + "&refine.basename=" + s;
+                    ajax.downloadFile(stateUrl, (json) => {
+                        let object = JSON.parse(json);
+
+                        let currentStateCoor = object.records[0].geometry.coordinates;
+
+                        for (const c of object.records) {
+                            currentStateCount += Number(c.fields.count);
+                        }
+                        markers.push(map.addMarker(currentStateCoor,s, currentStateCount, "marker poi"));
+                    });
+                }
             },
             changeView(zoom=0, location=[0,0], pitch=0, bearing=0) {
                 if(location == "USA"){
@@ -57,6 +78,9 @@ function setupUI() {
                 map.setZoomLevel(zoom);
                 map.setPitchAndBearing(pitch, bearing);
                 map.flyTo(location);
+            },
+            toggleMotivations(){
+                biasButtons.hidden = !biasButtons.hidden;
             }
         }
     });
