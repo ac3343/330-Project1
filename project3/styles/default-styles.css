@@ -1,13 +1,17 @@
 body {
     margin: 0;
     padding: 0;
+    display: grid;
+    grid-template-rows: auto auto;
+    background-color: #777;
 }
 
 #map {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 100%;
+    width: 700px;
+    border: 5px solid aliceblue;
 }
 
 .marker {
@@ -40,19 +44,16 @@ body {
     width: 130px;
     height: 120px;
     background-color: lightgray;
-    border: lpx solid black;
     height: auto;
 }
 
 #controls button {
     font-size: .9em;
     width: 100%;
-    background-color: hsl( 195.100%, 50%);
 }
 
 #controls button:hover {
     color: #777;
-    background-color: hsl(195, 100%, 60%)
 }
 
 #biasButtons {
@@ -61,7 +62,53 @@ body {
     height: 400px;
     overflow: scroll;
 }
-#biasButtons::-webkit-scrollbar{
+
+#biasButtons::-webkit-scrollbar {
     width: 2px;
-    
+}
+
+#statistics, header {
+    padding-left: 725px;
+}
+
+#statistics ul {
+    columns: 3;
+}
+
+header, #statistics h1 {
+    text-align: center;
+}
+
+header {
+    font-family: 'Playfair Display', serif;
+}
+
+#statistics {
+    height: auto;
+    font-family: 'Cabin', sans-serif;
+}
+
+#statistics button {
+    background-color: #D6D3F0;
+}
+
+input[type="radio"] {
+    /* remove standard background appearance */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* create custom radiobutton appearance */
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    padding: 3px;
+    /* background-color only for content */
+    background-clip: content-box;
+    border: 1px solid #3F2834;
+    background-color: #3F2834;
+    border-radius: 50%;
+}
+
+input[type="radio"]:checked {
+    background-color: #2C1320;
 }
